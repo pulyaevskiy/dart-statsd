@@ -29,7 +29,7 @@ class StatsdUdpConnection implements StatsdConnection {
       var address = _.first;
       _logger
           .fine('UDP: Internet address lookup succeeded. Using: ${address}.');
-      RawDatagramSocket.bind(InternetAddress.ANY_IP_V4, port).then((socket) {
+      RawDatagramSocket.bind(InternetAddress.ANY_IP_V4, 0).then((socket) {
         _logger.fine('UDP: Connected to statsd server.');
         completer.complete(new StatsdUdpConnection._(address, port, socket));
       }, onError: (e) {

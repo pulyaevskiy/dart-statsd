@@ -54,7 +54,7 @@ void main() {
       StatsdUdpConnection connection =
           await StatsdUdpConnection.bind('127.0.0.1', 80);
       expect(connection, new isInstanceOf<StatsdUdpConnection>());
-      expect(connection.socket, isNull);
+      expect(connection.socket, isNotNull);
       connection.send('test');
       connection.close();
     });
