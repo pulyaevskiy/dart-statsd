@@ -1,10 +1,14 @@
 part of statsd;
 
+/// Interface for statsd client connection implementations.
 abstract class StatsdConnection {
   Future send(String packet);
   Future close();
 
   /// Connects to the [uri].
+  ///
+  /// Only UDP connections supported at this moment.
+  /// Example URI: `udp://127.0.0.1:8125`
   static Future<StatsdConnection> connect(Uri uri) {
     if (uri.scheme != 'udp') {
       throw new ArgumentError.value(
@@ -15,6 +19,7 @@ abstract class StatsdConnection {
   }
 }
 
+/// UDP socket client connection communitating with statsd server.
 class StatsdUdpConnection implements StatsdConnection {
   final InternetAddress address;
   final int port;
@@ -22,22 +27,22 @@ class StatsdUdpConnection implements StatsdConnection {
 
   StatsdUdpConnection._(this.address, this.port, this.socket);
 
-  static Future<StatsdConnection> bind(String host, int port) {
+  static Future<StatsdConnection> bind(String address, int port) {
     var completer = new Completer<StatsdConnection>();
 
-    InternetAddress.lookup(host).then((_) {
+    InternetAddress.lookup(address).then((_) {
       var address = _.first;
-      _logger
-          .fine('UDP: Internet address lookup succeeded. Using: ${address}.');
+      _logger.info('Internet address lookup succeeded. Using: ${address}.');
       RawDatagramSocket.bind(InternetAddress.ANY_IP_V4, 0).then((socket) {
-        _logger.fine('UDP: Connected to statsd server.');
+        _logger.info('Connected to port ${socket.port}.');
         completer.complete(new StatsdUdpConnection._(address, port, socket));
-      }, onError: (e) {
-        _logger.warning('UDP: Could not connect to statsd server. Error: ${e}');
+      }, onError: (e, stackTrace) {
+        _logger.warning('Error binding to a port. Error: ${e}', e, stackTrace);
         completer.complete(new StatsdUdpConnection._(address, port, null));
       });
-    }, onError: (e) {
-      _logger.warning('UDP: Internet address lookup succeeded. Error: ${e}.');
+    }, onError: (e, stackTrace) {
+      _logger.warning(
+          'Internet address lookup failed. Error: ${e}.', e, stackTrace);
       completer.complete(new StatsdUdpConnection._(null, port, null));
     });
 
@@ -46,7 +51,7 @@ class StatsdUdpConnection implements StatsdConnection {
 
   @override
   Future send(String packet) {
-    _logger.fine('UDP: Sending packet to statsd: ${packet}.');
+    _logger.fine('Sending packet to statsd: ${packet}.');
     socket?.send(packet.codeUnits, address, port);
     return new Future.value();
   }

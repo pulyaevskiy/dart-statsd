@@ -13,6 +13,12 @@ void main() {
       expect(connection, new isInstanceOf<StatsdUdpConnection>());
       connection.close();
     });
+
+    test('it only supports UDP connections', () {
+      expect(() {
+        return StatsdConnection.connect(Uri.parse('tcp://127.0.0.1:4545'));
+      }, throwsArgumentError);
+    });
   });
 
   group('StatsdUdpConnection:', () {
@@ -51,8 +57,9 @@ void main() {
 
     test('it silently ignores connection errors', () async {
       // No exceptions should be thrown.
+      // TODO: how to make this test closer to real life?
       StatsdUdpConnection connection =
-          await StatsdUdpConnection.bind('127.0.0.1', 80);
+          await StatsdUdpConnection.bind('127.0.0.1', 4546);
       expect(connection, new isInstanceOf<StatsdUdpConnection>());
       expect(connection.socket, isNotNull);
       connection.send('test');

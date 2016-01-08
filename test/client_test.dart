@@ -53,6 +53,24 @@ void main() {
 
       expect(connection.packets, equals(expected));
     });
+
+    test('it prepends the prefix if provided', () {
+      client = new StatsdClient(connection, prefix: 'global.');
+      client.count('test');
+      client.gauge('gauge', 333);
+      client.set('uniques', 345);
+      var stopwatch = new StopwatchMock();
+      when(stopwatch.elapsedMilliseconds).thenReturn(527);
+      client.time('latency', stopwatch);
+
+      var expected = [
+        'global.test:1|c',
+        'global.gauge:333|g',
+        'global.uniques:345|s',
+        'global.latency:527|ms'
+      ];
+      expect(connection.packets, equals(expected));
+    });
   });
 }
 
