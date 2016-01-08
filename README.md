@@ -13,8 +13,7 @@ Use git dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  statsd:
-    git: https://github.com/pulyaevskiy/dart-statsd.git
+  statsd: "^0.1.0"
 ```
 
 And then import it as usual:
