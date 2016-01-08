@@ -27,20 +27,26 @@ class StatsdUdpConnection implements StatsdConnection {
 
     InternetAddress.lookup(host).then((_) {
       var address = _.first;
+      _logger
+          .fine('UDP: Internet address lookup succeeded. Using: ${address}.');
       RawDatagramSocket.bind(InternetAddress.ANY_IP_V4, port).then((socket) {
+        _logger.fine('UDP: Connected to statsd server.');
         completer.complete(new StatsdUdpConnection._(address, port, socket));
-      },
-          onError: (e) => completer
-              .complete(new StatsdUdpConnection._(address, port, null)));
-    },
-        onError: (e) =>
-            completer.complete(new StatsdUdpConnection._(null, port, null)));
+      }, onError: (e) {
+        _logger.warning('UDP: Could not connect to statsd server. Error: ${e}');
+        completer.complete(new StatsdUdpConnection._(address, port, null));
+      });
+    }, onError: (e) {
+      _logger.warning('UDP: Internet address lookup succeeded. Error: ${e}.');
+      completer.complete(new StatsdUdpConnection._(null, port, null));
+    });
 
     return completer.future;
   }
 
   @override
   Future send(String packet) {
+    _logger.fine('UDP: Sending packet to statsd: ${packet}.');
     socket?.send(packet.codeUnits, address, port);
     return new Future.value();
   }
