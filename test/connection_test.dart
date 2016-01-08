@@ -65,5 +65,16 @@ void main() {
       connection.send('test');
       connection.close();
     });
+
+    test('it silently ignores errors of address lookup', () async {
+      // No exceptions should be thrown.
+      StatsdUdpConnection connection =
+          await StatsdUdpConnection.bind('can.not.be.resolved', 4546);
+      expect(connection, new isInstanceOf<StatsdUdpConnection>());
+      expect(connection.socket, isNull);
+      expect(connection.address, isNull);
+      connection.send('test');
+      connection.close();
+    });
   });
 }
