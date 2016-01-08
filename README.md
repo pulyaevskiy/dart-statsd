@@ -2,8 +2,8 @@
 
 [![Build Status](https://img.shields.io/travis-ci/pulyaevskiy/dart-statsd.svg?branch=master&style=flat-square)](https://travis-ci.org/pulyaevskiy/dart-statsd)
 [![Coverage Status](https://img.shields.io/coveralls/pulyaevskiy/dart-statsd.svg?branch=master&style=flat-square)](https://coveralls.io/github/pulyaevskiy/dart-statsd?branch=master)
+[![Pub package](https://img.shields.io/pub/v/statsd.svg?style=flat-square)](https://pub.dartlang.org/packages/statsd)
 [![License](https://img.shields.io/badge/license-BSD--2-blue.svg?style=flat-square)](https://raw.githubusercontent.com/pulyaevskiy/dart-statsd/master/LICENSE)
-
 
 A [StatsD](https://github.com/etsy/statsd) client library implemented in Dart.
 
