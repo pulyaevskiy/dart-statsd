@@ -1,0 +1,12 @@
+sudo: required
+
+dist: trusty
+
+language: dart
+
+dart:
+  - stable
+
+script:
+  - pub run test -r expanded test/all.dart
+  - pub run dart_coveralls report -T --retry 2 test/all.dart

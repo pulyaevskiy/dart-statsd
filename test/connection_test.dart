@@ -6,7 +6,7 @@ import 'dart:io';
 import 'dart:async';
 
 void main() {
-  group('StatsdConnection', () {
+  group('StatsdConnection:', () {
     test('it creates UDP connections from Uri', () async {
       var connection =
           await StatsdConnection.connect(Uri.parse('udp://127.0.0.1:4545'));

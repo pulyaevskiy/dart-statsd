@@ -10,3 +10,4 @@ environment:
 dev_dependencies:
   test: "^0.12.6+1"
   mockito: "^0.11.0"
+  dart_coveralls: "^0.4.0"

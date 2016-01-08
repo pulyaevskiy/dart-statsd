@@ -1,4 +1,4 @@
-library statsd.tests.connection;
+library statsd.tests.client;
 
 import 'dart:async';
 
@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 class StopwatchMock extends Mock implements Stopwatch {}
 
 void main() {
-  group('Statsd Client Protocol:', () {
+  group('StatsdClient:', () {
     StatsdClient client;
     StatsdStubConnection connection;
     setUp(() {
