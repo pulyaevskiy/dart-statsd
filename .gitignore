@@ -1,0 +1,5 @@
+.pub
+packages
+.packages
+doc/api
+pubspec.lock
