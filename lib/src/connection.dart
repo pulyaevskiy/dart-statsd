@@ -12,7 +12,7 @@ abstract class StatsdConnection {
   static Future<StatsdConnection> connect(Uri uri) {
     if (uri.scheme != 'udp') {
       throw new ArgumentError.value(
-          uri, 'host', 'Only UDP connections supported at this moment.');
+          uri, 'uri', 'Only UDP connections supported at this moment.');
     }
 
     return StatsdUdpConnection.bind(uri.host, uri.port);

@@ -24,10 +24,6 @@ import 'package:statsd/statsd.dart';
 
 ## Usage
 
-> Important note: The client is designed to silently ignore any exceptions
-> that may occur when sending metrics to statsd. This is done to prevent any
-> interference with normal application flow.
-
 Basic example:
 
 ```dart
@@ -58,6 +54,14 @@ Future main() async {
   // Sending sets:
   await client.set('uniques', 345);
 
+  // Sending multiple metrics at once:
+  var batch = client.batch();
+  batch
+    ..time('response-time', stopwatch)
+    ..count('total-requests', 3)
+    ..set('metric1', 56);
+  await batch.send();
+
   // Make sure to close the connection when done:
   connection.close();
 }
@@ -66,7 +70,6 @@ Future main() async {
 Current limitations:
 
 * Only UDP connections are supported at this moment.
-* Batch operations are not implemented.
 
 ## License
 
