@@ -1,11 +1,6 @@
-sudo: required
-
-dist: trusty
+sudo: false
 
 language: dart
-
-dart:
-  - stable
 
 script:
   - pub run test -r expanded test/all.dart

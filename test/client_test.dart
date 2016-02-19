@@ -71,6 +71,30 @@ void main() {
       ];
       expect(connection.packets, equals(expected));
     });
+
+    test('it sends batches of packets', () {
+      var stopwatch = new StopwatchMock();
+      when(stopwatch.elapsedMilliseconds).thenReturn(527);
+
+      client = new StatsdClient(connection, prefix: 'global.');
+      var batch = client.batch();
+      batch
+        ..count('test')
+        ..gauge('gauge', 333)
+        ..gaugeDelta('gauge', 10)
+        ..set('uniques', 345)
+        ..time('latency', stopwatch);
+      batch.send();
+
+      var expected = [
+        'global.test:1|c',
+        'global.gauge:333|g',
+        'global.gauge:+10|g',
+        'global.uniques:345|s',
+        'global.latency:527|ms'
+      ].join('\n');
+      expect(connection.packets, equals([expected]));
+    });
   });
 }
 
