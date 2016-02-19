@@ -1,5 +1,5 @@
 name: statsd
-version: 0.1.1
+version: 0.1.2
 description: StatsD client for Dart
 homepage: https://github.com/pulyaevskiy/dart-statsd
 author: Anatoly Pulyaevskiy <anatoly.pulyaevskiy@gmail.com>
