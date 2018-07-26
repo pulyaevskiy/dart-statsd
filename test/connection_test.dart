@@ -1,16 +1,15 @@
-library statsd.tests.connection;
-
-import 'package:test/test.dart';
-import 'package:statsd/statsd.dart';
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
+
+import 'package:statsd/statsd.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('StatsdConnection:', () {
     test('it creates UDP connections from Uri', () async {
       var connection =
           await StatsdConnection.connect(Uri.parse('udp://127.0.0.1:4545'));
-      expect(connection, new isInstanceOf<StatsdUdpConnection>());
+      expect(connection, const TypeMatcher<StatsdUdpConnection>());
       connection.close();
     });
 
@@ -35,7 +34,7 @@ void main() {
 
         String message = new String.fromCharCodes(d.data);
         data.add(message);
-        await server.close();
+        server.close();
       });
     });
 
@@ -46,7 +45,7 @@ void main() {
     test('it sends packets', () async {
       StatsdUdpConnection connection =
           await StatsdUdpConnection.bind('127.0.0.1', 4545);
-      expect(connection, new isInstanceOf<StatsdUdpConnection>());
+      expect(connection, const TypeMatcher<StatsdUdpConnection>());
       await connection.send('test');
       await subscription.asFuture();
 
@@ -60,7 +59,7 @@ void main() {
       // TODO: how to make this test closer to real life?
       StatsdUdpConnection connection =
           await StatsdUdpConnection.bind('127.0.0.1', 4546);
-      expect(connection, new isInstanceOf<StatsdUdpConnection>());
+      expect(connection, const TypeMatcher<StatsdUdpConnection>());
       expect(connection.socket, isNotNull);
       connection.send('test');
       connection.close();
@@ -70,7 +69,7 @@ void main() {
       // No exceptions should be thrown.
       StatsdUdpConnection connection =
           await StatsdUdpConnection.bind('can.not.be.resolved', 4546);
-      expect(connection, new isInstanceOf<StatsdUdpConnection>());
+      expect(connection, const TypeMatcher<StatsdUdpConnection>());
       expect(connection.socket, isNull);
       expect(connection.address, isNull);
       connection.send('test');

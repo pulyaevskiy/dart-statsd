@@ -1,5 +1,3 @@
-library statsd.tests.client;
-
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -22,7 +20,12 @@ void main() {
       client.count('test', 2);
       client.count('test', -2);
       client.count('test', 2, 0.1);
-      var expected = ['test:1|c', 'test:2|c', 'test:-2|c', 'test:2|c|@0.1',];
+      var expected = [
+        'test:1|c',
+        'test:2|c',
+        'test:-2|c',
+        'test:2|c|@0.1',
+      ];
 
       expect(connection.packets, equals(expected));
     });

@@ -1,16 +1,15 @@
 name: statsd
-version: 0.1.2
+version: 0.2.0
 description: StatsD client for Dart
 homepage: https://github.com/pulyaevskiy/dart-statsd
 author: Anatoly Pulyaevskiy <anatoly.pulyaevskiy@gmail.com>
 
 environment:
-  sdk: '>=1.12.0 <2.0.0'
+  sdk: '>=2.0.0-dev <3.0.0'
 
 dependencies:
   logging: "^0.11.2"
 
 dev_dependencies:
-  test: "^0.12.6+1"
-  mockito: "^0.11.0"
-  dart_coveralls: "^0.4.0"
+  test: "^1.0.0"
+  mockito: "^3.0.0-beta"
