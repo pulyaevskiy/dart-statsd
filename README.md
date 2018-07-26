@@ -1,7 +1,6 @@
 # StatsD client for Dart
 
 [![Build Status](https://img.shields.io/travis-ci/pulyaevskiy/dart-statsd.svg?branch=master&style=flat-square)](https://travis-ci.org/pulyaevskiy/dart-statsd)
-[![Coverage Status](https://img.shields.io/coveralls/pulyaevskiy/dart-statsd.svg?branch=master&style=flat-square)](https://coveralls.io/github/pulyaevskiy/dart-statsd?branch=master)
 [![Pub package](https://img.shields.io/pub/v/statsd.svg?style=flat-square)](https://pub.dartlang.org/packages/statsd)
 [![License](https://img.shields.io/badge/license-BSD--2-blue.svg?style=flat-square)](https://raw.githubusercontent.com/pulyaevskiy/dart-statsd/master/LICENSE)
 
@@ -13,7 +12,7 @@ Use git dependency in your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  statsd: "^0.1.1"
+  statsd: "^0.2.0"
 ```
 
 And then import it as usual:
