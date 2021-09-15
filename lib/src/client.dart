@@ -34,6 +34,15 @@ abstract class StatsdClient {
   /// is sampled every 1/10th of the time.
   Future time(String name, Stopwatch stopwatch, [double sampleRate]);
 
+  /// Sends timing metric from a Duration type value to the server.
+  ///
+  /// The client will use `Duration.inMilliseconds` as a value to send.
+  ///
+  /// The [sampleRate] parameter if provided tells statsd that this
+  /// counter is being sampled. For instance, value `0.1` means that the counter
+  /// is sampled every 1/10th of the time.
+  Future timeDuration(String name, Duration duration, [double sampleRate]);
+
   /// Creates new batch of packets.
   ///
   /// Returned object can be used to send multiple metrics at once:
@@ -93,8 +102,13 @@ class _StatsdClient implements StatsdClient {
 
   @override
   Future time(String name, Stopwatch stopwatch, [double sampleRate]) {
-    var msec = stopwatch.elapsedMilliseconds.toString();
-    var packet = _packet(prefix, name, msec, 'ms', sampleRate);
+    return timeDuration(name, stopwatch.elapsed, sampleRate);
+  }
+
+  @override
+  Future timeDuration(String name, Duration duration, [double sampleRate]) {
+    final msec = duration.inMilliseconds.toString();
+    final packet = _packet(prefix, name, msec, 'ms', sampleRate);
     return connection.send(packet);
   }
 

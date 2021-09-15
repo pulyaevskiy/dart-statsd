@@ -1,3 +1,7 @@
+## [0.2.1]
+
+- added `timeDuration` api, it's roughly the same as `time` but accepts a `Duration` type
+
 ## [0.2.0]
 
 - updated for Dart 2
