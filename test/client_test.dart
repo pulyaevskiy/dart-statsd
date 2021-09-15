@@ -10,8 +10,8 @@ class StopwatchMock extends Mock implements Stopwatch {
 
 void main() {
   group('StatsdClient:', () {
-    StatsdClient client;
-    StatsdStubConnection connection;
+    late StatsdClient client;
+    late StatsdStubConnection connection;
     setUp(() {
       connection = new StatsdStubConnection();
       client = new StatsdClient(connection);
@@ -77,12 +77,7 @@ void main() {
       when(stopwatch.elapsedMilliseconds).thenReturn(527);
       client.time('latency', stopwatch);
 
-      var expected = [
-        'global.test:1|c',
-        'global.gauge:333|g',
-        'global.uniques:345|s',
-        'global.latency:527|ms'
-      ];
+      var expected = ['global.test:1|c', 'global.gauge:333|g', 'global.uniques:345|s', 'global.latency:527|ms'];
       expect(connection.packets, equals(expected));
     });
 
@@ -100,20 +95,15 @@ void main() {
         ..time('latency', stopwatch);
       batch.send();
 
-      var expected = [
-        'global.test:1|c',
-        'global.gauge:333|g',
-        'global.gauge:+10|g',
-        'global.uniques:345|s',
-        'global.latency:527|ms'
-      ].join('\n');
+      var expected = ['global.test:1|c', 'global.gauge:333|g', 'global.gauge:+10|g', 'global.uniques:345|s', 'global.latency:527|ms'].join('\n');
       expect(connection.packets, equals([expected]));
     });
   });
 }
 
 class StatsdStubConnection implements StatsdConnection {
-  final List<String> packets = new List();
+  final packets = <String>[];
+
   @override
   Future close() => new Future.value();
 

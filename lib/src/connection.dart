@@ -11,8 +11,7 @@ abstract class StatsdConnection {
   /// Example URI: `udp://127.0.0.1:8125`
   static Future<StatsdConnection> connect(Uri uri) {
     if (uri.scheme != 'udp') {
-      throw new ArgumentError.value(
-          uri, 'uri', 'Only UDP connections supported at this moment.');
+      throw new ArgumentError.value(uri, 'uri', 'Only UDP connections supported at this moment.');
     }
 
     return StatsdUdpConnection.bind(uri.host, uri.port);
@@ -21,9 +20,9 @@ abstract class StatsdConnection {
 
 /// UDP socket client connection communitating with statsd server.
 class StatsdUdpConnection implements StatsdConnection {
-  final InternetAddress address;
+  final InternetAddress? address;
   final int port;
-  final RawDatagramSocket socket;
+  final RawDatagramSocket? socket;
 
   StatsdUdpConnection._(this.address, this.port, this.socket);
 
@@ -41,8 +40,7 @@ class StatsdUdpConnection implements StatsdConnection {
         completer.complete(new StatsdUdpConnection._(address, port, null));
       });
     }, onError: (e, stackTrace) {
-      _logger.warning(
-          'Internet address lookup failed. Error: ${e}.', e, stackTrace);
+      _logger.warning('Internet address lookup failed. Error: ${e}.', e, stackTrace);
       completer.complete(new StatsdUdpConnection._(null, port, null));
     });
 
@@ -52,7 +50,7 @@ class StatsdUdpConnection implements StatsdConnection {
   @override
   Future send(String packet) {
     _logger.fine('Sending packet to statsd: ${packet}.');
-    socket?.send(packet.codeUnits, address, port);
+    socket?.send(packet.codeUnits, address!, port);
     return new Future.value();
   }
 
