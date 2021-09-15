@@ -59,7 +59,7 @@ abstract class StatsdClient {
   /// If [prefix] is provided it will be prepended to all metric names that are
   /// sent via this client.
   factory StatsdClient(StatsdConnection connection, {String? prefix}) {
-    return new _StatsdClient(connection, prefix ?? '');
+    return _StatsdClient(connection, prefix ?? '');
   }
 }
 
@@ -112,7 +112,7 @@ class _StatsdClient implements StatsdClient {
   }
 
   @override
-  StatsdBatch batch() => new StatsdBatch._(connection, prefix);
+  StatsdBatch batch() => StatsdBatch._(connection, prefix);
 }
 
 /// Batch of StatsD packets.
@@ -183,7 +183,7 @@ class StatsdBatch {
       _packets.clear();
       return _connection.send(packet);
     } else {
-      return new Future.value();
+      return Future.value();
     }
   }
 }

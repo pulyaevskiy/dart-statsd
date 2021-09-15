@@ -7,6 +7,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 
 part 'src/client.dart';
+
 part 'src/connection.dart';
 
-Logger _logger = new Logger('statsd');
+Logger _logger = Logger('statsd');

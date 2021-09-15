@@ -31,7 +31,7 @@ void main() {
         Datagram? d = server.receive();
         if (d == null) return;
 
-        String message = new String.fromCharCodes(d.data);
+        String message = String.fromCharCodes(d.data);
         data.add(message);
         server.close();
       });
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('it sends packets', () async {
-      StatsdUdpConnection connection = await (StatsdUdpConnection.bind('127.0.0.1', 4545) as FutureOr<StatsdUdpConnection>);
+      final connection = (await StatsdUdpConnection.bind('127.0.0.1', 4545)) as StatsdUdpConnection;
       expect(connection, const TypeMatcher<StatsdUdpConnection>());
       await connection.send('test');
       await subscription.asFuture();
@@ -55,7 +55,7 @@ void main() {
     test('it silently ignores connection errors', () async {
       // No exceptions should be thrown.
       // TODO: how to make this test closer to real life?
-      StatsdUdpConnection connection = await (StatsdUdpConnection.bind('127.0.0.1', 4546) as FutureOr<StatsdUdpConnection>);
+      final connection = (await StatsdUdpConnection.bind('127.0.0.1', 4546)) as StatsdUdpConnection;
       expect(connection, const TypeMatcher<StatsdUdpConnection>());
       expect(connection.socket, isNotNull);
       connection.send('test');
@@ -64,7 +64,7 @@ void main() {
 
     test('it silently ignores errors of address lookup', () async {
       // No exceptions should be thrown.
-      StatsdUdpConnection connection = await (StatsdUdpConnection.bind('can.not.be.resolved', 4546) as FutureOr<StatsdUdpConnection>);
+      final connection = (await StatsdUdpConnection.bind('can.not.be.resolved', 4546)) as StatsdUdpConnection;
       expect(connection, const TypeMatcher<StatsdUdpConnection>());
       expect(connection.socket, isNull);
       expect(connection.address, isNull);

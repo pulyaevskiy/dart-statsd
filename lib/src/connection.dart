@@ -11,7 +11,7 @@ abstract class StatsdConnection {
   /// Example URI: `udp://127.0.0.1:8125`
   static Future<StatsdConnection> connect(Uri uri) {
     if (uri.scheme != 'udp') {
-      throw new ArgumentError.value(uri, 'uri', 'Only UDP connections supported at this moment.');
+      throw ArgumentError.value(uri, 'uri', 'Only UDP connections supported at this moment.');
     }
 
     return StatsdUdpConnection.bind(uri.host, uri.port);
@@ -27,21 +27,21 @@ class StatsdUdpConnection implements StatsdConnection {
   StatsdUdpConnection._(this.address, this.port, this.socket);
 
   static Future<StatsdConnection> bind(String address, int port) {
-    var completer = new Completer<StatsdConnection>();
+    var completer = Completer<StatsdConnection>();
 
     InternetAddress.lookup(address).then((_) {
       var address = _.first;
       _logger.info('Internet address lookup succeeded. Using: ${address}.');
       RawDatagramSocket.bind(InternetAddress.anyIPv4, 0).then((socket) {
         _logger.info('Connected to port ${socket.port}.');
-        completer.complete(new StatsdUdpConnection._(address, port, socket));
+        completer.complete(StatsdUdpConnection._(address, port, socket));
       }, onError: (e, stackTrace) {
         _logger.warning('Error binding to a port. Error: ${e}', e, stackTrace);
-        completer.complete(new StatsdUdpConnection._(address, port, null));
+        completer.complete(StatsdUdpConnection._(address, port, null));
       });
     }, onError: (e, stackTrace) {
       _logger.warning('Internet address lookup failed. Error: ${e}.', e, stackTrace);
-      completer.complete(new StatsdUdpConnection._(null, port, null));
+      completer.complete(StatsdUdpConnection._(null, port, null));
     });
 
     return completer.future;
@@ -51,12 +51,12 @@ class StatsdUdpConnection implements StatsdConnection {
   Future send(String packet) {
     _logger.fine('Sending packet to statsd: ${packet}.');
     socket?.send(packet.codeUnits, address!, port);
-    return new Future.value();
+    return Future.value();
   }
 
   @override
   Future close() {
     socket?.close();
-    return new Future.value();
+    return Future.value();
   }
 }
