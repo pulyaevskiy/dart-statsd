@@ -4,7 +4,9 @@ import 'package:mockito/mockito.dart';
 import 'package:statsd/statsd.dart';
 import 'package:test/test.dart';
 
-class StopwatchMock extends Mock implements Stopwatch {}
+class StopwatchMock extends Mock implements Stopwatch {
+  Duration get elapsed => Duration(milliseconds: elapsedMilliseconds);
+}
 
 void main() {
   group('StatsdClient:', () {
@@ -36,6 +38,15 @@ void main() {
       client.time('latency', stopwatch);
       client.time('latency', stopwatch, 0.1);
       var expected = ['latency:527|ms', 'latency:527|ms|@0.1'];
+
+      expect(connection.packets, equals(expected));
+    });
+
+    test('it sends timing metrics via timeDuration api', () {
+      final duration = Duration(milliseconds: 527);
+      client.timeDuration('latencyD', duration);
+      client.timeDuration('latencyD', duration, 0.1);
+      var expected = ['latencyD:527|ms', 'latencyD:527|ms|@0.1'];
 
       expect(connection.packets, equals(expected));
     });

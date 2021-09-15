@@ -44,6 +44,10 @@ Future main() async {
   stopwatch.start();
   // client will use value of stopwatch.elapsedMilliseconds
   await client.time('response-time', stopwatch);
+  
+  // Sending timings with a duration:
+  var duration = Duration(milliseconds: 500);
+  await client.timeDuration('response-timeDuration', duration);
 
   // Sending gauges:
   await client.gauge('metric2', 428); // sets gauge value to 428
