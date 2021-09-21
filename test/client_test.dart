@@ -1,18 +1,16 @@
 import 'dart:async';
 
-import 'package:mockito/mockito.dart';
 import 'package:statsd/statsd.dart';
 import 'package:test/test.dart';
-
-class StopwatchMock extends Mock implements Stopwatch {}
+import 'stopwatch_mock.dart';
 
 void main() {
   group('StatsdClient:', () {
-    StatsdClient client;
-    StatsdStubConnection connection;
+    late StatsdClient client;
+    late StatsdStubConnection connection;
     setUp(() {
-      connection = new StatsdStubConnection();
-      client = new StatsdClient(connection);
+      connection = StatsdStubConnection();
+      client = StatsdClient(connection);
     });
 
     test('it sends counter metrics', () {
@@ -31,11 +29,19 @@ void main() {
     });
 
     test('it sends timing metrics', () {
-      var stopwatch = new StopwatchMock();
-      when(stopwatch.elapsedMilliseconds).thenReturn(527);
+      var stopwatch = StopwatchMock(527);
       client.time('latency', stopwatch);
       client.time('latency', stopwatch, 0.1);
       var expected = ['latency:527|ms', 'latency:527|ms|@0.1'];
+
+      expect(connection.packets, equals(expected));
+    });
+
+    test('it sends timing metrics via timeDuration api', () {
+      final duration = Duration(milliseconds: 527);
+      client.timeDuration('latencyD', duration);
+      client.timeDuration('latencyD', duration, 0.1);
+      var expected = ['latencyD:527|ms', 'latencyD:527|ms|@0.1'];
 
       expect(connection.packets, equals(expected));
     });
@@ -58,28 +64,20 @@ void main() {
     });
 
     test('it prepends the prefix if provided', () {
-      client = new StatsdClient(connection, prefix: 'global.');
+      client = StatsdClient(connection, prefix: 'global.');
       client.count('test');
       client.gauge('gauge', 333);
       client.set('uniques', 345);
-      var stopwatch = new StopwatchMock();
-      when(stopwatch.elapsedMilliseconds).thenReturn(527);
+      var stopwatch = StopwatchMock(527);
       client.time('latency', stopwatch);
 
-      var expected = [
-        'global.test:1|c',
-        'global.gauge:333|g',
-        'global.uniques:345|s',
-        'global.latency:527|ms'
-      ];
+      var expected = ['global.test:1|c', 'global.gauge:333|g', 'global.uniques:345|s', 'global.latency:527|ms'];
       expect(connection.packets, equals(expected));
     });
 
     test('it sends batches of packets', () {
-      var stopwatch = new StopwatchMock();
-      when(stopwatch.elapsedMilliseconds).thenReturn(527);
-
-      client = new StatsdClient(connection, prefix: 'global.');
+      var stopwatch = StopwatchMock(527);
+      client = StatsdClient(connection, prefix: 'global.');
       var batch = client.batch();
       batch
         ..count('test')
@@ -89,26 +87,21 @@ void main() {
         ..time('latency', stopwatch);
       batch.send();
 
-      var expected = [
-        'global.test:1|c',
-        'global.gauge:333|g',
-        'global.gauge:+10|g',
-        'global.uniques:345|s',
-        'global.latency:527|ms'
-      ].join('\n');
+      var expected = ['global.test:1|c', 'global.gauge:333|g', 'global.gauge:+10|g', 'global.uniques:345|s', 'global.latency:527|ms'].join('\n');
       expect(connection.packets, equals([expected]));
     });
   });
 }
 
 class StatsdStubConnection implements StatsdConnection {
-  final List<String> packets = new List();
+  final packets = <String>[];
+
   @override
-  Future close() => new Future.value();
+  Future close() => Future.value();
 
   @override
   Future send(String packet) {
     packets.add(packet);
-    return new Future.value();
+    return Future.value();
   }
 }
