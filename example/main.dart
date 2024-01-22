@@ -2,17 +2,15 @@ import 'dart:async';
 import 'package:statsd/statsd.dart';
 
 Future main() async {
-  var connection =
-      await StatsdConnection.connect(Uri.parse('udp://127.0.0.1:5678'));
-  var client = new StatsdClient(connection, prefix: 'myapp');
+  var connection = await StatsdConnection.connect(Uri.parse('udp://127.0.0.1:5678'));
+  var client = StatsdClient(connection, prefix: 'myapp');
   // Sending counters:
   await client.count('metric1'); // increment `myapp.metric1` by 1
   await client.count('metric1', -1); // decrement `myapp.metric1` by 1
-  await client.count(
-      'metric1', 5, 0.1); // increment `myapp.metric1` by 5 with 0.1 sample rate
+  await client.count('metric1', 5, 0.1); // increment `myapp.metric1` by 5 with 0.1 sample rate
 
   // Sending timings:
-  var stopwatch = new Stopwatch();
+  var stopwatch = Stopwatch();
   stopwatch.start();
   // client will use value of stopwatch.elapsedMilliseconds
   await client.time('response-time', stopwatch);
